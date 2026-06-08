@@ -46,8 +46,35 @@ chmod +x "${tmp}/mind"
 mv "${tmp}/mind" "${dest}/mind"
 
 echo "Installed mind to ${dest}/mind"
+
+# Make sure ${dest} is on PATH. /usr/local/bin already is; for ~/.local/bin we add
+# it to the right shell rc (idempotent) so `mind` works in new shells.
 case ":${PATH}:" in
-  *":${dest}:"*) : ;;
-  *) echo "Note: ${dest} is not on your PATH. Add it with: export PATH=\"${dest}:\$PATH\"" ;;
+  *":${dest}:"*)
+    : # already on PATH (e.g. /usr/local/bin)
+    ;;
+  *)
+    shell_name=$(basename "${SHELL:-sh}")
+    case "$shell_name" in
+      fish)
+        rc="${HOME}/.config/fish/config.fish"
+        mkdir -p "$(dirname "$rc")"
+        grep -qs "$dest" "$rc" 2>/dev/null || \
+          printf '\n# Added by the Mindrealm installer\nfish_add_path %s\n' "$dest" >> "$rc"
+        ;;
+      zsh)
+        rc="${HOME}/.zshrc"
+        grep -qsF "$dest" "$rc" 2>/dev/null || \
+          printf '\n# Added by the Mindrealm installer\nexport PATH="%s:$PATH"\n' "$dest" >> "$rc"
+        ;;
+      *)
+        rc="${HOME}/.bashrc"
+        grep -qsF "$dest" "$rc" 2>/dev/null || \
+          printf '\n# Added by the Mindrealm installer\nexport PATH="%s:$PATH"\n' "$dest" >> "$rc"
+        ;;
+    esac
+    echo "Added ${dest} to your PATH in ${rc}."
+    echo "Restart your shell or run: source ${rc}"
+    ;;
 esac
 echo "Next: run 'mind login' to authenticate."
