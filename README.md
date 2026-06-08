@@ -18,12 +18,24 @@ Windows (PowerShell):
 iwr -useb https://mindrealm.ai/install.ps1 | iex
 ```
 
-Or download a binary for your platform from the
-[Releases](https://github.com/mindrealm-ai/mind/releases/latest) page, extract it, and put `mind`
-(or `mind.exe`) on your PATH.
+Re-run the same command any time to update. The installer places a single `mind` binary in one
+location and touches nothing else: `/usr/local/bin` or `~/.local/bin` on macOS and Linux,
+`%LOCALAPPDATA%\Programs\mind` on Windows.
 
 Prefer to read before you run? The installers live in this repo:
 [`install.sh`](install.sh) and [`install.ps1`](install.ps1).
+
+### Install manually
+
+Download the archive for your platform from the
+[Releases](https://github.com/mindrealm-ai/mind/releases/latest) page, then:
+
+- **macOS / Linux:** download `mind-<os>-<arch>.tar.gz`, extract it (`tar -xzf mind-<os>-<arch>.tar.gz`),
+  make it executable (`chmod +x mind`), and move `mind` onto a directory on your `PATH` (e.g.
+  `/usr/local/bin`).
+- **Windows:** download `mind-windows-<arch>.zip`, extract `mind.exe`, and add its folder to your `PATH`.
+
+Then run `mind login` to authenticate.
 
 ## Commands
 
@@ -45,7 +57,7 @@ mind review --full-scan
 ```
 
 `mind analyze` is the hook entry point that `mind install` configures: your agent calls it
-automatically when it stops, so you rarely run it by hand.
+automatically when it stops, so you won't run it by hand.
 
 ## Configuration
 
@@ -63,4 +75,5 @@ Precedence (highest first): a command-line flag (`--diff-only` / `--full-scan`, 
 exclusive) > environment variables (`MIND_*`) > `.mind/mind.yaml` > `~/.config/mind/mind.yaml` >
 built-in defaults.
 
-Full guide: https://mindrealm.ai/getting-started
+Get started:   https://mindrealm.ai/getting-started
+Documentation: https://mindrealm.ai/docs
