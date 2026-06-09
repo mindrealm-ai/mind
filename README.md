@@ -50,6 +50,10 @@ mind --help       # list every command and flag
 them), and asks whether to set up globally (the default) or just for the current project. Use flags
 to skip the prompts, e.g. `mind setup --platform claude-code,codex,gemini --global --yes`.
 
+To remove the hook again, run `mind setup --uninstall` (it takes the same `--platform`,
+`--global`/`--local`, and `--yes` flags). It removes only what setup added, leaving your other
+hooks and permissions intact, and is a no-op when nothing is installed.
+
 Gemini and Codex require you to trust hooks once after setup before they run:
 
 - **Gemini:** start Gemini and run `/hooks enable-all` (or `/hooks enable mindrealm-review`).
