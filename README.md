@@ -41,14 +41,14 @@ Then run `mind login` to authenticate.
 
 ```
 mind login        # authenticate (opens your browser)
-mind install      # detect your agent(s) and set up the stop-hook auto-fix loop
+mind setup        # detect your agent(s) and set up the stop-hook auto-fix loop
 mind review       # review your changed files
 mind --help       # list every command and flag
 ```
 
-`mind install` detects Claude Code and Codex, asks which to set up (you can pick either or both),
-and asks whether to install globally (the default) or just for the current project. Use flags to
-skip the prompts, e.g. `mind install --platform claude-code,codex --global --yes`.
+`mind setup` detects Claude Code and Codex, asks which to set up (you can pick either or both),
+and asks whether to set up globally (the default) or just for the current project. Use flags to
+skip the prompts, e.g. `mind setup --platform claude-code,codex --global --yes`.
 
 `mind review` reviews your changes by default (diff-only). To scan the whole repository:
 
@@ -56,7 +56,7 @@ skip the prompts, e.g. `mind install --platform claude-code,codex --global --yes
 mind review --full-scan
 ```
 
-`mind analyze` is the hook entry point that `mind install` configures: your agent calls it
+`mind analyze` is the hook entry point that `mind setup` configures: your agent calls it
 automatically when it stops, so you won't run it by hand.
 
 ## Configuration
