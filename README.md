@@ -63,6 +63,11 @@ Both re-prompt whenever the hook command changes.
 mind review --full-scan
 ```
 
+On a very large repository, `mind review --full-scan` can exceed the analysis time budget (10
+minutes by default). When it does, the review returns a partial result: the findings produced
+before the deadline, marked "Partial analysis", and it still blocks on any must-fix rather than
+failing with zero findings. Narrow the scope with `--diff-only` or `--analyzer` for a faster review.
+
 `mind analyze` is the hook entry point that `mind setup` configures: your agent calls it
 automatically when it stops, so you won't run it by hand.
 
