@@ -1,3 +1,2 @@
 # Local runtime artifacts written when `mind` (or an agent) runs in this repo.
 .mind/
-.claude/
