@@ -97,5 +97,28 @@ Precedence (highest first): a command-line flag (`--diff-only` / `--full-scan`, 
 exclusive) > environment variables (`MIND_*`) > `.mind/mind.yaml` > `~/.config/mind/mind.yaml` >
 built-in defaults.
 
+## Custom rules
+
+Encode your team's standards as rules in MindQL and Mindrealm runs them in every review, alongside
+the built-in checks. One rule works across Go, Python, TypeScript, and Rust, with no build and no
+database, and the same code produces the same findings on every run.
+
+Rules live in `.mind/rules/*.mql` (project) or `~/.config/mind/rules/` (global). A rule matches
+something, filters it with a condition, then emits a finding at a fixed severity:
+
+```
+rule api_no_db {
+  match import i
+  where i.file.path ~ "internal/api/" and i.imports_package("db*")
+  block "api must not import a db package directly"
+}
+```
+
+Drop the file in `.mind/rules/` and run `mind review`. Rules are checked in with your code, so the
+whole team gets them. Keep `.mind/rules/` out of `.gitignore` so the review can see them; if you
+ignore `.mind/`, re-include the rules with `.mind/*` and `!.mind/rules/`.
+
+Full reference: https://mindrealm.ai/docs
+
 Get started:   https://mindrealm.ai/getting-started
 Documentation: https://mindrealm.ai/docs
