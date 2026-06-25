@@ -81,6 +81,49 @@ finds an issue it blocks the agent from stopping and feeds the findings back as 
 instruction, so it fixes them in the loop before the work reaches you. This auto-fix loop works on
 Claude Code, Codex, and Gemini.
 
+## Continuous integration
+
+`mind login` is interactive, so for CI generate a **CI token** from the dashboard (Settings, CI
+tokens) and give it to the CLI headless. The token is organization-scoped, review-only, and
+revocable, and it stays valid for long runs, so a `--full-scan` never expires mid-review.
+
+Provide it either as the `MIND_CI_TOKEN` environment variable:
+
+```
+MIND_CI_TOKEN=mind_ci_xxxxx mind review --full-scan
+```
+
+or store it once with `mind login --token` for repeated local headless use:
+
+```
+mind login --token mind_ci_xxxxx
+mind review
+```
+
+The repository still needs the Mindrealm GitHub App installed; the token authenticates the caller,
+the app authorizes the repo.
+
+GitHub Actions example:
+
+```yaml
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0            # needed so mind can compute the diff against the base commit
+- run: curl -fsSL https://mindrealm.ai/install.sh | sh
+- run: mind review
+  env:
+    MIND_CI_TOKEN: ${{ secrets.MIND_CI_TOKEN }}
+```
+
+`mind review` exits `0` when the review passes, `1` on a blocking finding, `2` on a config or
+credential problem (for example a revoked token), `3` on a network or service problem, and `4` on
+invalid arguments, so a CI step fails the build on a blocking finding.
+
+For machine-readable output use `mind review --format json` (default is `text`); each finding carries
+`severity`, `file_path`, `line`, `description`, `remediation`, and `analyzer_id`. If your pipeline
+already runs its own linters, type checks, and tests, `mind review --no-gates` skips Mindrealm's gate
+checks while the rest of the review still runs and still blocks on a must-fix.
+
 ## Configuration
 
 `mind` reads config from `.mind/mind.yaml` (project) or `~/.config/mind/mind.yaml` (global). Common
