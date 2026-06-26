@@ -83,9 +83,9 @@ Claude Code, Codex, and Gemini.
 
 ## Continuous integration
 
-`mind login` is interactive, so for CI generate a **CI token** from the dashboard (Settings, CI
-tokens) and give it to the CLI headless. The token is organization-scoped, review-only, and
-revocable, and it stays valid for long runs, so a `--full-scan` never expires mid-review.
+`mind login` is interactive, so for CI generate a **CI token** from your dashboard and give it to
+the CLI headless. The token is organization-scoped, review-only, and revocable, and it stays valid
+for long runs, so a `--full-scan` never expires mid-review.
 
 Provide it either as the `MIND_CI_TOKEN` environment variable:
 
