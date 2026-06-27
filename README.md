@@ -140,6 +140,22 @@ Precedence (highest first): a command-line flag (`--diff-only` / `--full-scan`, 
 exclusive) > environment variables (`MIND_*`) > `.mind/mind.yaml` > `~/.config/mind/mind.yaml` >
 built-in defaults.
 
+## Security gates
+
+Two extra gates run dedicated security scanners over your repo. They are **off by default** — unlike
+the build, lint, and type gates (which key off the change in front of them), these scan the whole tree
+for a deep, point-in-time security pass, so they stay dark until you ask for them.
+
+| Security gate | Tool | Finds |
+|---------------|------|-------|
+| Secrets | `gitleaks` | Hardcoded API keys, tokens, and credentials across any language. |
+| Dependency CVEs | `osv-scanner` | Known vulnerabilities in your dependencies (Go, npm, PyPI, Cargo lockfiles). |
+
+Turn both on in config with `gates: { security: true }`, or for a single run with
+`mind review --enable-security-gates`. The scanners are optional local tools: if `gitleaks` or
+`osv-scanner` is not installed on the machine running the review, that gate simply skips — it never
+fails the run.
+
 ## Custom rules
 
 Encode your team's standards as rules in MindQL and Mindrealm runs them in every review, alongside
