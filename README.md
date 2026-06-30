@@ -71,8 +71,27 @@ On a very large repository, `mind review --full-scan` can exceed the analysis ti
 minutes by default). When it does, the review returns a partial result: the findings produced
 before the deadline, marked "Partial analysis", and it still blocks on any must-fix rather than
 failing with zero findings. Narrow the scope with `--diff-only`, or narrow the analyzer set with
-`--analyzers a,b,c` (a comma-separated list of analyzer IDs) or `--profile <name>` (a named, curated
+`--analyzers a,b,c` (a comma-separated list of analyzer IDs) or `--profile <name>` (a named
 analyzer set), for a faster review.
+
+### `mind review` flags
+
+| Flag | Effect |
+|------|--------|
+| `--full-scan` | Scan the entire repository, not just changed files (paid plan). |
+| `--diff-only` | Only report findings in changed files (the default). |
+| `--commit <sha>` | Review files changed in a specific commit. Implies diff-only. |
+| `--staged` | Only staged changes. |
+| `--unstaged` | Only unstaged changes. |
+| `--analyzers <id,...>` | Run only these analyzers, comma-separated. |
+| `--profile <name>` | Run only the analyzers in a named profile. Overrides the `mind.yaml` profile; `--analyzers` adds to it. |
+| `--min-severity / --max-severity` | Bound the findings shown. One of `note`, `improve`, `must_fix`, `block`. |
+| `--show-suppressed` | Include suppressed findings in the output. |
+| `--format text\|json` | Output format. |
+| `--enable-go-test` | Run the go-test gate (off by default for speed). |
+| `--enable-pytest` | Run the pytest gate (off by default for speed). |
+| `--enable-js-test` | Run the JS test gate, jest or vitest (off by default for speed). |
+| `--no-gates` | Disable all gates (linters, type checks). |
 
 `mind analyze` is the hook entry point that `mind setup` configures: your agent calls it
 automatically when it stops, so you won't run it by hand.
@@ -138,7 +157,7 @@ keys:
 | `min_severity` | Hide lower-severity findings. One of `note`, `improve`, `must_fix`, `block` — only findings at or above it are shown (e.g. `improve` hides nitpicks). |
 | `max_severity` | Hide higher-severity findings. Same scale as `min_severity` — only findings at or below it are shown (pair with `min_severity` to isolate one tier). |
 | `disabled_analyzers` | A list of analyzers to turn off, by full ID, short name, or concern (e.g. `magic-string` or `hygiene`). |
-| `profile` | Run only the analyzers in a named, curated profile. A `--profile` flag overrides this; `--analyzers` adds to it. |
+| `profile` | Run only the analyzers in a named profile. A `--profile` flag overrides this; `--analyzers` adds to it. |
 
 Precedence (highest first): a command-line flag (`--diff-only` / `--full-scan`, which are mutually
 exclusive) > environment variables (`MIND_*`) > `.mind/mind.yaml` > `~/.config/mind/mind.yaml` >
