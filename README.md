@@ -70,7 +70,9 @@ mind review --full-scan
 On a very large repository, `mind review --full-scan` can exceed the analysis time budget (10
 minutes by default). When it does, the review returns a partial result: the findings produced
 before the deadline, marked "Partial analysis", and it still blocks on any must-fix rather than
-failing with zero findings. Narrow the scope with `--diff-only` or `--analyzer` for a faster review.
+failing with zero findings. Narrow the scope with `--diff-only`, or narrow the analyzer set with
+`--analyzers a,b,c` (a comma-separated list of analyzer IDs) or `--profile <name>` (a named, curated
+analyzer set), for a faster review.
 
 `mind analyze` is the hook entry point that `mind setup` configures: your agent calls it
 automatically when it stops, so you won't run it by hand.
@@ -134,7 +136,9 @@ keys:
 | `diff_only` | Review only changed files (the default). |
 | `full_scan` | Review the whole repository instead. |
 | `min_severity` | Hide lower-severity findings. One of `note`, `improve`, `must_fix`, `block` — only findings at or above it are shown (e.g. `improve` hides nitpicks). |
+| `max_severity` | Hide higher-severity findings. Same scale as `min_severity` — only findings at or below it are shown (pair with `min_severity` to isolate one tier). |
 | `disabled_analyzers` | A list of analyzers to turn off, by full ID, short name, or concern (e.g. `magic-string` or `hygiene`). |
+| `profile` | Run only the analyzers in a named, curated profile. A `--profile` flag overrides this; `--analyzers` adds to it. |
 
 Precedence (highest first): a command-line flag (`--diff-only` / `--full-scan`, which are mutually
 exclusive) > environment variables (`MIND_*`) > `.mind/mind.yaml` > `~/.config/mind/mind.yaml` >
