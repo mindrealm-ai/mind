@@ -197,8 +197,8 @@ rule api_no_db {
 ```
 
 Drop the file in `.mind/rules/` and run `mind review`. Rules are checked in with your code, so the
-whole team gets them. Keep `.mind/rules/` out of `.gitignore` so the review can see them; if you
-ignore `.mind/`, re-include the rules with `.mind/*` and `!.mind/rules/`.
+whole team gets them. Commit `.mind/` as-is — the CLI keeps its throwaway runtime state in your OS temp
+dir, not the repo, so there's nothing in `.mind/` to gitignore.
 
 Full reference: https://mindrealm.ai/docs
 
