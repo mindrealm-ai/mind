@@ -46,6 +46,17 @@ mind review       # review your changed files
 mind --help       # list every command and flag
 ```
 
+If a proxy or remote session prevents the automatic browser flow, keep the command running and open the printed URL
+in your configured browser:
+
+```bash
+mind login --no-browser
+```
+
+The browser must use its internet proxy while bypassing that proxy for `localhost`, `127.0.0.1`, and `::1` so the
+OAuth redirect can reach the CLI's waiting callback listener. Set `BROWSER` to an executable path when you want
+`mind login` to use a specific browser or wrapper.
+
 `mind setup` detects Claude Code, Codex, and Gemini, asks which to set up (you can pick any of
 them), and asks whether to set up globally (the default) or just for the current project. Use flags
 to skip the prompts, e.g. `mind setup --platform claude-code,codex,gemini --global --yes`.
