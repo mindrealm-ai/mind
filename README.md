@@ -80,10 +80,10 @@ mind review --full-scan
 
 On a very large repository, `mind review --full-scan` can exceed the analysis time budget (10
 minutes by default). When it does, the review returns a partial result: the findings produced
-before the deadline, marked "Partial analysis", and it still blocks on any must-fix rather than
+before the deadline, marked "Partial analysis", and it still blocks on any blocker or major finding rather than
 failing with zero findings. Narrow the scope with `--diff-only`, or narrow the analyzer set with
-`--analyzers a,b,c` (a comma-separated list of analyzer IDs) or `--profile <name>` (a named
-analyzer set), for a faster review.
+`--analyzers a,b,c` (a comma-separated list of rule IDs) or `--profile <name>` (a named
+rule set), for a faster review.
 
 ### `mind review` flags
 
@@ -96,7 +96,7 @@ analyzer set), for a faster review.
 | `--unstaged` | Only unstaged changes. |
 | `--analyzers <id,...>` | Run only these analyzers, comma-separated. |
 | `--profile <name>` | Run only the analyzers in a named profile. Overrides the `mind.yaml` profile; `--analyzers` adds to it. |
-| `--min-severity / --max-severity` | Bound the findings shown. One of `note`, `improve`, `must_fix`, `block`. |
+| `--min-severity / --max-severity` | Bound the findings shown. One of `info`, `minor`, `major`, `blocker`. |
 | `--show-suppressed` | Include suppressed findings in the output. |
 | `--format text\|json` | Output format. |
 | `--enable-go-test` | Run the go-test gate (off by default for speed). |
@@ -147,14 +147,14 @@ GitHub Actions example:
     MIND_CI_TOKEN: ${{ secrets.MIND_CI_TOKEN }}
 ```
 
-`mind review` exits `0` when the review passes, `1` on a blocking finding, `2` on a config or
+`mind review` exits `0` when the review passes, `1` on a blocker or major finding, `2` on a config or
 credential problem (for example a revoked token), `3` on a network or service problem, and `4` on
-invalid arguments, so a CI step fails the build on a blocking finding.
+invalid arguments, so a CI step fails the build on a blocker or major finding.
 
 For machine-readable output use `mind review --format json` (default is `text`); each finding carries
-`severity`, `file_path`, `line`, `description`, `remediation`, and `analyzer_id`. If your pipeline
+`severity`, `file_path`, `start_line`, `description`, `remediation`, and `rule_id`. If your pipeline
 already runs its own linters, type checks, and tests, `mind review --no-gates` skips Mindrealm's gate
-checks while the rest of the review still runs and still blocks on a must-fix.
+checks while the rest of the review still runs and still blocks on a blocker or major finding.
 
 ## Configuration
 
@@ -165,7 +165,7 @@ keys:
 |-----|---------|
 | `diff_only` | Review only changed files (the default). |
 | `full_scan` | Review the whole repository instead. |
-| `min_severity` | Hide lower-severity findings. One of `note`, `improve`, `must_fix`, `block` — only findings at or above it are shown (e.g. `improve` hides nitpicks). |
+| `min_severity` | Hide lower-severity findings. One of `info`, `minor`, `major`, `blocker` — only findings at or above it are shown (e.g. `minor` hides info findings). |
 | `max_severity` | Hide higher-severity findings. Same scale as `min_severity` — only findings at or below it are shown (pair with `min_severity` to isolate one tier). |
 | `disabled_analyzers` | A list of analyzers to turn off, by full ID, short name, or concern (e.g. `magic-string` or `hygiene`). |
 | `profile` | Run only the analyzers in a named profile. A `--profile` flag overrides this; `--analyzers` adds to it. |
@@ -203,7 +203,7 @@ something, filters it with a condition, then emits a finding at a fixed severity
 rule api_no_db {
   match import i
   where i.file.path ~ "internal/api/" and i.imports_package("db*")
-  block "api must not import a db package directly"
+  emit blocker "api must not import a db package directly"
 }
 ```
 
