@@ -2,7 +2,7 @@
 
 The Mindrealm CLI. This repo hosts the public `mind` binary releases; the source lives in
 Mindrealm's private repo. `mind` reviews your code from the terminal and wires Mindrealm into your
-agent (Claude Code, Codex, or Gemini) as a stop hook, so findings get fixed in the loop before you see them.
+agent (Claude Code or Codex) as a stop hook, so findings get fixed in the loop before you see them.
 
 ## Install
 
@@ -57,20 +57,17 @@ The browser must use its internet proxy while bypassing that proxy for `localhos
 OAuth redirect can reach the CLI's waiting callback listener. Set `BROWSER` to an executable path when you want
 `mind login` to use a specific browser or wrapper.
 
-`mind setup` detects Claude Code, Codex, and Gemini, asks which to set up (you can pick any of
-them), and asks whether to set up globally (the default) or just for the current project. Use flags
-to skip the prompts, e.g. `mind setup --platform claude-code,codex,gemini --global --yes`.
+`mind setup` detects Claude Code and Codex, asks which to set up (you can pick either or both), and
+asks whether to set up globally (the default) or just for the current project. Use flags to skip the
+prompts, e.g. `mind setup --platform claude-code,codex --global --yes`.
 
 To remove the hook again, run `mind setup --uninstall` (it takes the same `--platform`,
 `--global`/`--local`, and `--yes` flags). It removes only what setup added, leaving your other
 hooks and permissions intact, and is a no-op when nothing is installed.
 
-Gemini and Codex require you to trust hooks once after setup before they run:
-
-- **Gemini:** start Gemini and run `/hooks enable-all` (or `/hooks enable mindrealm-review`).
-- **Codex:** start Codex and run `/hooks` to review and trust the Mindrealm Stop hook.
-
-Both re-prompt whenever the hook command changes.
+Codex requires you to trust hooks once after setup before they run: start Codex and run `/hooks` to
+review and trust the Mindrealm Stop hook so it goes Active. It re-prompts whenever the hook command
+changes.
 
 `mind review` reviews your changes by default (diff-only). To scan the whole repository:
 
@@ -111,7 +108,7 @@ The hook runs every time your agent finishes, so the review (and the gates: your
 checks, builds, and tests) always runs, instead of only when the agent remembers. When Mindrealm
 finds an issue it blocks the agent from stopping and feeds the findings back as its next
 instruction, so it fixes them in the loop before the work reaches you. This auto-fix loop works on
-Claude Code, Codex, and Gemini.
+Claude Code and Codex.
 
 ## Continuous integration
 
